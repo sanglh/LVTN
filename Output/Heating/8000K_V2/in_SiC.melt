@@ -1,0 +1,56 @@
+units			metal	
+atom_style		atomic
+timestep 		0.001
+dimension 	        2	
+boundary		p p p
+read_data       SiC.lammpstrj
+mass			1 28.0855
+mass			2 12.0107 
+
+velocity	all create 50.0 12345
+
+pair_style tersoff
+pair_coeff * * SiC.tersoff Si C
+
+thermo_style custom step temp etotal  xlo xhi ylo yhi zlo zhi vol press
+#========================================RELAX================================================
+fix			1 all npt temp 50.0 50.0 0.001 x 0.0 0.0 1000.0 y 0.0 0.0 1000.0 couple xy
+dump				1 all xyz 100000 relax50.xyz
+thermo				100000
+run				100000
+undump				1
+unfix				1
+#=============================================================================================
+
+
+
+#==================================HEATING at 2x10^11 K/s=====================================
+#*********************************************************************************************
+# DELTA_T  = 8000K-50K = 7950K
+# DURATION = 6950K : 2x10^11 K/s = 3975x10^-11 s
+# STEPS    = 3975x10^-11 s : 0,001 ps = 3975x10^-11 : 10^-15 = 3975x10^4 MDs
+# thermo output : each 5K
+# DELTA_T = 5K
+# DURATION = 5K : 2x10^11 K/s = 25x10^-12 s
+# STEPS    = 25x10^-12 s : 0,001 ps = 25x10^-12 : 10^-15 = 25000 MDs
+# dump output : each 50K
+# DELTA_T = 50K
+# DURATION = 50K : 2x10^11 K/s = 25x10^-11 s
+# STEPS    = 25x10^-11 s : 0,001 ps = 25x10^-11 : 10^-15 = 250000 MDs
+#*********************************************************************************************
+fix			1 all npt temp 50.0 8000.0 0.001 x 0.0 0.0 1000.0 y 0.0 0.0 1000.0 couple xy
+dump				1 all xyz 500000 heating.xyz
+thermo				25000
+run				39750000
+undump				1
+unfix				1
+#=============================================================================================
+
+#========================================RELAX================================================
+fix			1 all npt temp 8000.0 8000.0 0.001 x 0.0 0.0 1000.0 y 0.0 0.0 1000.0 couple xy
+dump				1 all xyz 100000 relax8000.xyz
+thermo				100000
+run				100000
+undump				1
+unfix				1
+#=============================================================================================

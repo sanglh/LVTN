@@ -1,0 +1,26 @@
+
+units				metal
+atom_style			atomic
+dimension			2
+boundary			p p p
+
+lattice custom 1.42 a1 3  0  0  a2 0 1.73203 0 a3 0.0 0.0 0.5 &
+basis 0 0.5 0  basis 0.166666 0 0 basis 0.5 0 0 basis 0.666666 0.5 0
+region  box block 0 10 0 10 -0.5 0.5
+create_box  1 box
+create_atoms 1 box
+
+mass				1 12.0107
+velocity			all create 50 12345
+pair_style 			lcbop
+pair_coeff 			* * C.lcbop C
+
+#---------------relax------------------------
+fix			1 all npt temp 50.0 50.0 0.001 x 0.0 0.0 1000.0 &
+y 0.0 0.0 1000.0 couple xy 
+dump				1 all xyz 50000 relax.xyz
+thermo				10000
+run				100000
+undump				1
+unfix				1
+

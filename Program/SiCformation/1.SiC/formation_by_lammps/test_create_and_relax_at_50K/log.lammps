@@ -1,0 +1,65 @@
+LAMMPS (12 Apr 2013)
+units			metal
+atom_style		atomic
+timestep 		0.001
+dimension 	        2
+boundary		p p p
+# ---------- Create Atoms ---------------------
+lattice  custom 1.78 a1 3  0  0  a2 0 1.73203 0 a3 0.0 0.0 0.5 basis 0 0.5 0  basis 0.166666 0 0 basis 0.5 0 0 basis 0.666666 0.5 0
+Lattice spacing in x,y,z = 5.34 3.08301 0.89
+region  box block 0 10 0 10 -0.5 0.5
+create_box 2 box
+Created orthogonal box = (0 0 -0.445) to (53.4 30.8301 0.445)
+  1 by 1 by 1 MPI processor grid
+create_atoms 1 box basis 1 1 basis 2 2 basis 3 1 basis 4 2
+Created 400 atoms
+mass			1 28.0855
+mass			2 12.0107
+
+velocity	all create 50.0 12345
+
+pair_style tersoff
+pair_coeff * * SiC.tersoff Si C
+thermo_style custom step temp etotal  xlo xhi ylo yhi zlo zhi
+
+#---------------relax------------------------
+fix			1 all npt temp 50.0 50.0 0.001 x 0.0 0.0 1000.0 y 0.0 0.0 1000.0 couple xy
+dump				1 all xyz 50000 relax.xyz
+thermo				10000
+run				100000
+Memory usage per processor = 1.91174 Mbytes
+Step Temp TotEng Xlo Xhi Ylo Yhi Zlo Zhi 
+       0           50   -2270.7702            0         53.4            0    30.830134       -0.445        0.445 
+   10000    46.416772   -2271.7701  -0.19153707    53.591537  -0.11058265    30.940717       -0.445        0.445 
+   20000    52.045195   -2270.9836  -0.52884932    53.928849  -0.30532763    31.135462       -0.445        0.445 
+   30000    49.256799   -2269.8392   -0.6167531    54.016753  -0.35607829    31.186212       -0.445        0.445 
+   40000    50.956271   -2272.2015  -0.40260527    53.802605  -0.23244147    31.062575       -0.445        0.445 
+   50000    48.722656   -2271.4876  -0.16344212    53.563442 -0.094362217    30.924496       -0.445        0.445 
+   60000    51.025767   -2271.3182  -0.14898033     53.54898 -0.086012802    30.916147       -0.445        0.445 
+   70000    46.541092   -2272.4578  -0.32572493    53.725725  -0.18805512    31.018189       -0.445        0.445 
+   80000    52.040148   -2271.4337  -0.47588833    53.875888  -0.27475095    31.104885       -0.445        0.445 
+   90000    47.845487   -2271.8215  -0.45191877    53.851919  -0.26091229    31.091046       -0.445        0.445 
+  100000    52.632443   -2272.1817  -0.30577473    53.705775    -0.176537    31.006671       -0.445        0.445 
+Loop time of 570.623 on 1 procs for 100000 steps with 400 atoms
+
+Pair  time (%) = 560.292 (98.1894)
+Neigh time (%) = 0.000520169 (9.11581e-005)
+Comm  time (%) = 0.923164 (0.161782)
+Outpt time (%) = 0.0225801 (0.00395709)
+Other time (%) = 9.38551 (1.64478)
+
+Nlocal:    400 ave 400 max 400 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Nghost:    234 ave 234 max 234 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Neighs:    0 ave 0 max 0 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+FullNghs:  7200 ave 7200 max 7200 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+
+Total # of neighbors = 7200
+Ave neighs/atom = 18
+Neighbor list builds = 1
+Dangerous builds = 0
+undump				1
+unfix				1

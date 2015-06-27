@@ -1,0 +1,63 @@
+LAMMPS (12 Apr 2013)
+
+units				metal
+atom_style			atomic
+dimension			2
+boundary			p p p
+
+lattice custom 1.42 a1 3  0  0  a2 0 1.73203 0 a3 0.0 0.0 0.5 basis 0 0.5 0  basis 0.166666 0 0 basis 0.5 0 0 basis 0.666666 0.5 0
+Lattice spacing in x,y,z = 4.26 2.45948 0.71
+region  box block 0 10 0 10 -0.5 0.5
+create_box  1 box
+Created orthogonal box = (0 0 -0.355) to (42.6 24.5948 0.355)
+  1 by 1 by 1 MPI processor grid
+create_atoms 1 box
+Created 400 atoms
+
+mass				1 12.0107
+velocity			all create 50 12345
+pair_style 			lcbop
+pair_coeff 			* * C.lcbop C
+
+#---------------relax------------------------
+fix			1 all npt temp 50.0 50.0 0.001 x 0.0 0.0 1000.0 y 0.0 0.0 1000.0 couple xy
+dump				1 all xyz 50000 relax.xyz
+thermo				10000
+run				100000
+Memory usage per processor = 2.60964 Mbytes
+Step Temp E_pair E_mol TotEng Press Volume 
+       0           50   -2939.9919            0   -2938.2728   -298.15791    1047.7396 
+   10000     48.31301   -2938.1918            0   -2936.5307    3092.9253    1048.0243 
+   20000    47.470956   -2938.4751            0   -2936.8429   -7560.9209    1048.5216 
+   30000    54.283953    -2938.306            0   -2936.4396   -7288.9954    1048.5834 
+   40000    47.108551   -2938.3107            0    -2936.691    836.95732    1048.1316 
+   50000    50.214694   -2938.4688            0   -2936.7422    7172.1311    1047.7674 
+   60000      50.0571   -2938.3838            0   -2936.6626    3716.1169    1047.9792 
+   70000    53.964362   -2938.1582            0   -2936.3028   -4688.5239    1048.4806 
+   80000    52.236795    -2938.227            0    -2936.431   -7557.5083    1048.5941 
+   90000    51.430797   -2938.1362            0   -2936.3678    1404.0805    1048.1574 
+  100000    49.336086   -2938.2807            0   -2936.5843    7924.8248    1047.7548 
+Loop time of 1011.58 on 1 procs for 100000 steps with 400 atoms
+
+Pair  time (%) = 995.98 (98.4582)
+Neigh time (%) = 0 (0)
+Comm  time (%) = 2.18654 (0.216151)
+Outpt time (%) = 0.0167479 (0.00165562)
+Other time (%) = 13.3929 (1.32396)
+
+Nlocal:    400 ave 400 max 400 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Nghost:    540 ave 540 max 540 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Neighs:    0 ave 0 max 0 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+FullNghs:  33600 ave 33600 max 33600 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+
+Total # of neighbors = 33600
+Ave neighs/atom = 84
+Neighbor list builds = 0
+Dangerous builds = 0
+undump				1
+unfix				1
+
